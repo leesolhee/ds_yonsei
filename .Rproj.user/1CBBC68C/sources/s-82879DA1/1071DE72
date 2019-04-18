@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1554369707310.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2315788253",
+    "id" : "1071DE72",
+    "lastKnownWriteTime" : 1554976756,
+    "last_content_update" : 1554977495930,
+    "path" : "C:/Users/thfgm/Desktop/데사입/ds_yonsei/data_structure.Rmd",
+    "project_path" : "data_structure.Rmd",
+    "properties" : {
+        "chunk_output_type" : "console",
+        "cursorPosition" : "6,23",
+        "last_setup_crc32" : "82879DA1bb338d19",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

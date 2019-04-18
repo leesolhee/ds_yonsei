@@ -1,0 +1,5 @@
+"0","mtcars %>%"
+"0","  mutate(auto_yn = ifelse(am == 1, "
+"0","  ""AUTO"", ""수동"")) %>% "
+"0","  group_by(auto_yn) %>% "
+"0","  summarise(mean_mpg = mean(mpg), max_mpg = max(mpg), 차댓수 = n())"

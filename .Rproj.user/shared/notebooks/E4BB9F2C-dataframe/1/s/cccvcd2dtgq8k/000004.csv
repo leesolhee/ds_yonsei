@@ -1,0 +1,17 @@
+"2","Warning message:
+"
+"2","In strsplit(code, ""\n"", fixed = TRUE) :"
+"2","
+ "
+"2"," input string 1 is invalid in this locale
+"
+"0","mtcars %>%"
+"0","  mutate(auto_yn = ifelse(am == 1, "
+"0","  ""AUTO"", ""수동"")) %>% "
+"0","  group_by(auto_yn) %>% "
+"0","  summarise(mean_mpg = mean(mpg),"
+"0","            median_mpg = median(mpg),"
+"0","            max_mpg = max(mpg),"
+"0","            min_mpg = min(mpg),"
+"0","            std_mpg = sd(mpg),"
+"0","            차댓수 = n())"

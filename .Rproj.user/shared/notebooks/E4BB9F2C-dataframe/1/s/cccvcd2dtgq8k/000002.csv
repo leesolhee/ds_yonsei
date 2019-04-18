@@ -1,0 +1,5 @@
+"0","mtcars %>%"
+"0","  select(mpg, am, wt, hp) %>%  #mtcars의 변수 중 4개만 선택"
+"0","  filter(mpg > 25) %>% "
+"0","  arrange(desc(mpg)) %>%  #역순 정렬 원하면 desc o.w arrange(mpg)"
+"0","  mutate(metric = hp/wt)"

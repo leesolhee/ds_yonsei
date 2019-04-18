@@ -1,0 +1,5 @@
+"0","mtcars %>%"
+"0","  select(mpg, am, wt, hp) %>%  "
+"0","  filter(mpg > 25) %>% "
+"0","  arrange(desc(mpg)) %>%  "
+"0","  mutate(metric = hp/wt)"

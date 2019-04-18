@@ -1,0 +1,139 @@
+---
+title: "data_structure"
+author: "solhee"
+date: "2019년 4월 4일"
+output:
+  html_document: default
+  pdf_document: default
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##자료구조
+
+- 스칼라(scalar)
+  - 연속형
+      - 정수: Integer
+      - 실수 :(Floating point): 1.2
+  - 범주형
+      - 남자/여자 - Factor(요인)
+      - 문자열 - String
+      
+
+#정수 & 실수(numeric)
+
+```{r ds-integer}
+hist(rnorm(100))
+height <- c(170, 180, 190, 185)
+
+height * 1.01 #계산이 됩니당
+
+weight <- c(70, 80, 90, 80)
+
+BMI <- weight/ height^2
+
+```
+
+$$\text{BMI} = \frac{\text{체중(kg)}}{\text{키(m)}^2}$$
+
+|브로카지수|BMI값|
+|-|:-:|
+| 저체중     | < 18.5 |
+| 정상체중   | 18.5 ~ 25.0 |
+| 과체중     | 25.0 ~ 30.0 |
+| 비만       | > 30.0 |
+
+
+#문자열과 요인
+
+이제 범주형 데이터의 세계로 들어간다!
+
+```{r ds-string, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+BMI_string <- c("비만", "저체중", "정상", "정상")
+BMI_string
+paste(BMI_string, collapse = "+")
+paste(BMI_string, collapse = ",")
+```
+
+
+은 오류가 납니다...계산안됨 ㅎㅅㅎ
+이 문제점을 factor로 해결해보자!
+
+```{r}
+BMI_factor = factor(BMI_string, levels=c("저체중", "정상", "과체중", "비만"))
+
+as.numeric(BMI_factor)
+```
+
+1. #tribble : 첫 줄 데이터 형태대로 긁어오는 방법
+```{r}
+data <- tribble(~"가명", ~"체중", ~"키", ~"재산",
+"아이언맨", 70, 185, 1000,
+'이기쁨', 48, 162, 1300,
+'어피치', 40, 100, 999999999,
+'무지', 20, 50, 999999999,
+'뽀로로', 30, 50, 0,
+'이상완', 100, 200,10000,
+'곰돌이푸',20,85,1600000000000,
+'B', 73.13, 183, 105,
+'F', 45, 165, 10000000000000,
+'YEAH', 170, 48, 10000,
+'토르', 85, 185, 9999999999999,
+'AA', 60, 100, 10000000,
+'AAA', 76, 111, 10093,
+'배수한', 180, 64, 1000,
+'지현이', 46, 175,100000000000000000000000,
+'응통', 50, 150, 7500,
+'마라탕' ,1,30,12345678,
+'금순이', 45, 156, 50000,
+'이동석', 177, 68, 10000000000000,
+'김원채',45,168,50000000,
+'피카츄',100,50,1000000,
+'abc', 50, 150, 3000)
+
+class(data)
+data
+```
+
+2. 클립보드(ctrl+c)에 저장되어있는 그대로 데이터프레임 만드는 법
+```{r}
+data2 = read.csv("clipboard")
+summary(data2)
+class(data2)
+```
+
+3. 임의로 csv 파일 바로 만들어서 데이터 프레임 만드는 법
+*인코딩은 항상 UTF-8 ^^*
+
+```{r import-csv-file}
+pokemon_df <- read_csv("C:/Users/thfgm/Desktop/pokemon.csv",
+                       col_types = cols(
+                            가명 = col_character(),
+                            체중 = col_double(),
+                            키 = col_double(),
+                            재산 = col_double()
+                          ))
+summary(pokemon_df)
+model_df <- pokemon_df %>% 
+  mutate(부자여부 = ifelse(재산 > median(pokemon_df$재산), "부자", "안부자")) %>% 
+  mutate(부자여부 = factor(부자여부, levels=c("안부자", "부자"))) %>% 
+  select(-가명)
+
+model_df %>% 
+  DT::datatable()
+
+```
+
+
+```{r}
+BMI_df = data.frame("BMI" = BMI, "BMI_요인"=BMI_factor, "BMI_문자열"=BMI_string)
+
+View(BMI_df)
+```
+
+pokemon_list

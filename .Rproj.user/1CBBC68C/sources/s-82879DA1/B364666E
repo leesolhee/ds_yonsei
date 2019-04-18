@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1554977423021.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "B364666E",
+    "lastKnownWriteTime" : 2,
+    "last_content_update" : 1554977423021,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "92D5A68B",
+        "caption" : "BMI_df",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=BMI_df&cache_key=92D5A68B",
+        "displayedObservations" : 4,
+        "environment" : "",
+        "object" : "BMI_df",
+        "preview" : 0,
+        "totalObservations" : 4,
+        "variables" : 3
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

@@ -1,0 +1,9 @@
+"0","BMI_df = data.frame(""BMI"" = BMI, ""BMI_요인""=BMI_factor, ""BMI_문자열""=BMI_string)"
+"2","Warning message:
+"
+"2","In strsplit(code, ""\n"", fixed = TRUE) :"
+"2","
+ "
+"2"," input string 1 is invalid in this locale
+"
+"0","View(BMI_df)"

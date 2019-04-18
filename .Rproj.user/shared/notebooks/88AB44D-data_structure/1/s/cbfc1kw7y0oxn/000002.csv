@@ -1,0 +1,5 @@
+"0","data2 = read.csv(""clipboard"")"
+"2","'clipboard'¿¡¼­ readTableHeader¿¡ ÀÇÇÏ¿© ¹ß°ßµÈ ¿Ï¼ºµÇÁö ¾ÊÀº ¸¶Áö¸· ¶óÀÎÀÔ´Ï´Ù"
+"2","Error in read.table(file = file, header = header, sep = sep, quote = quote,  : 
+  ì—´ì˜ ê°œìˆ˜ê°€ ì—´ì˜ ì´ë¦„ë“¤ë³´ë‹¤ ë§ìŠµë‹ˆë‹¤
+"

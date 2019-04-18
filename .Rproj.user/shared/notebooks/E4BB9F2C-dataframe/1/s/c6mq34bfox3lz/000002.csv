@@ -1,0 +1,8 @@
+"0","mtcars %>%"
+"0","  select(mpg, am, wt, hp) %>%  "
+"0","  filter(mpg > 25) %>% "
+"0","  arrange(desc(mpg)) %>%  "
+"0","  mutate(metric = hp/wt)"
+"2","Error in mtcars %>% select(mpg, am, wt, hp) %>% filter(mpg > 25) %>% arrange(desc(mpg)) %>%  : 
+  could not find function ""%>%""
+"
