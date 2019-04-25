@@ -1,0 +1,220 @@
+---
+title: "[ESC 2019] Week2 Assignment"
+author: "Solhee Lee"
+date: "2019-03-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Q1
+$R^2$식은 다음과 같다. 
+$$R^2 = 1 - \cfrac{SSE} {SSTO}$$
+일반적인 다중회귀식 $Y_i = \beta_0 + \beta_1X_i +\epsilon_i$ 과는 다르게 intercept($\beta_0$)가 없는 $Y_i = \beta_1X_i +\epsilon_i$인 경우 Full Model에서 SSE값이 SSTO값을 초과할 수 있다. 따라서 $R^2<0$인 경우가 발생할 수 있다.
+$$SSE = \sum_{i=1}^ne_i^2 > \sum_{i=1}^n(Y_i-\bar{Y})^2 = SSTO(F)$$
+
+##Q2
+#Setup
+
+```{r results='hide', message=FALSE, warning=FALSE}
+library(dplyr)
+library(fBasics)
+library(ggplot2)
+library(leaps)
+library(glmnet)
+library(corrplot)
+```
+
+[System] 필요한 Packages를 다 불러온 것 같다...! 과제를 본격적으로 시작해보자...
+
+```{r}
+data <- read.csv('C:/Users/thfgm/Desktop/ESC Spring 2019/Dataset/Boston.csv', header=T)
+str(data)
+```
+
+# (a) EDA
+
+```{r message=FALSE, warning=FALSE}
+print(colSums(is.na(data)))
+```
+
+[System] data 내에 NA값이 없는 걸 알아냈다...!
+[System] data 그래프 모양을(를) 알아봐야 할 것 같다...
+
+```{r}
+hist(data$medv)
+```
+[System] right-skewed인 것 같다. skewness와 kurtosis를 측정해보자...!
+
+```{r}
+skewness(data$medv)
+kurtosis(data$medv)
+```
+[System]
+skewness > 0 인 것으로 보아 right-skewed 인 것 같다.
+kurtosis > 0 인 것으로 보아 정규분포 대비 뾰족한 모양을 띄고 있다.
+
+[System] skewness를 줄이기 위해 transformation(Box-Cox 방법)를 하자...!
+
+```{r}
+tran_data = log(data$medv)
+hist(tran_data)
+skewness(tran_data)
+kurtosis(tran_data)
+```
+
+[System] transformation전 대비 두 값 모두 0에 근사하는 것으로 보아 정규분포에 가까워졌다. (사랑해요 정규분포!) 갈 길이 머니 정규성 검정은 일단 패스한다...!
+
+[System] 다음은 각 predictor 간의 다중공선성을 알아보고자 한다...!
+
+```{r}
+corr = cor(data)
+corrplot(corr, method='number')
+```
+
+[System] 1에 가까워질수록 각 변수간 상관관계가 있다는 의미다. 파랑색을 유심히 살펴보자...! 
+[System] rad와 tax의 관계가 매우 의심스럽다...
+
+```{r}
+plot(data$rad, data$tax)
+par(mfrow = c(2,2))
+plot(lm(data$rad ~ data$tax))
+```
+
+[System] 사실 0.7 이상으로 다 보려고 했지만 시간에 도망다니다가 결국 그냥 도망가기로 했다. ))) 총총 일단 둘 다 다중공선성이 높은 tax와 rad를 빼버리겠다. + 다시 transformation.
+
+```{r}
+re_data = subset(data,select = -c(rad,tax))
+str(re_data)
+```
+
+```{r echo = FALSE}
+rere_data = log(re_data$medv)
+hist(rere_data)
+skewness(rere_data)
+kurtosis(rere_data)
+```
+
+## (b) Full model
+
+```{r}
+full <- lm(tran_data~., data=data)
+summary(full)
+```
+
+[System] Adjuestd R-Squared = 0.9537을 얻었다...!
+
+```{r}
+par(mfrow=c(2,2))
+plot(full)
+```
+
+## (c) Variable Selection
+
+1. Best Sumbset Method
+[System] leaps 라이브러리를 이용해서 best subset을 구해보자...!
+
+```{r}
+regfit.full <- regsubsets(tran_data~., data=data, nvmax=13)
+summary(regfit.full)
+```
+
+```{r}
+reg.summary <- summary(regfit.full)
+K <- which.max(reg.summary$adjr2)
+coef(regfit.full, K)
+reg.summary$adjr2[K]
+print(K)
+```
+
+[System] Adjuestd R-Squared = 0.9539565을(를) 얻었다...!
+[System] adjr2로 했을 때 11번째 모형이 best sebset인 것으로 나왔다...!
+
+[System] 분리하기 귀찮으니 AIC와 BIC는 같이 돌릴테다.
+```{r}
+which.max(reg.summary$cp)
+which.max(reg.summary$bic)
+```
+
+[System] AIC와 BIC는 둘다 모형 1이(가) best라 나왔다...!
+
+2. Forward Stepwise
+```{r}
+regfit.fwd <- regsubsets(medv~., data=data, nvmax=13, method='forward')
+reg.summary = summary(regfit.fwd)
+which.max(reg.summary$adjr2)
+which.max(reg.summary$cp)
+which.max(reg.summary$bic)
+```
+
+[System] adjr2는 12번, AIC와 BIC는 모두 1번을 골랐다
+
+3. Backward Stepwise
+```{r}
+regfit.fwd <- regsubsets(medv~., data=data, nvmax=13, method='backward')
+reg.summary = summary(regfit.fwd)
+which.max(reg.summary$adjr2)
+which.max(reg.summary$cp)
+which.max(reg.summary$bic)
+```
+
+[System] adjr2는 12번, AIC와 BIC는 모두 1번을 골랐다
+
+## (d) Regularization
+
+[System] Ridge & LASSO 분석을 하겠다...!
+```{r}
+x = model.matrix(tran_data~.,data)[,-1] # exclude iota (the intercept vector)
+y = as.matrix(tran_data)
+```
+
+### (1) Ridge Regression
+
+```{r}
+ridge.fit <- glmnet(x=x, y=y, alpha=0)
+ridge.fit
+```
+
+```{r}
+plot(ridge.fit, xvar="lambda", label=TRUE)
+```
+
+
+#### Cross Validation for obtaining best lambda
+
+```{r results='hide', message=FALSE, warning=FALSE}
+ridge.fit.cv <- cv.glmnet(x=x, y=y, alpha=0, type.measure="mse", nfolds=20)
+bestlam <- ridge.fit.cv$lambda.min
+bestlam
+```
+
+
+```{r message=FALSE, warning=FALSE}
+coef(ridge.fit.cv, s=bestlam)
+```
+
+### (2) LASSO Regression
+
+```{r}
+lasso.fit <- glmnet(x=x, y=y, alpha=1)
+lasso.fit
+```
+
+```{r}
+plot(lasso.fit, xvar="lambda", label=TRUE)
+```
+
+#### Cross Validation for obtaining best lambda
+
+```{r results='hide', message=FALSE, warning=FALSE}
+lasso.fit.cv <- cv.glmnet(x=x, y=y, alpha=1, type.measure="mse", nfolds=20)
+bestlam <- lasso.fit.cv$lambda.min
+bestlam
+```
+
+
+```{r message=FALSE, warning=FALSE}
+coef(lasso.fit.cv, s=bestlam)
+```
