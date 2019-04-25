@@ -1,33 +1,46 @@
+## 네이버 증권 크롤링 
 
-# --------------------------------------------------------------------------------
-# 다음 메인 페이지에서 실시간 검색어 수집
-# --------------------------------------------------------------------------------
-
-# 필요한 패키지를 불러옵니다. 
+# 라이브러리 불러오기
 library(tidyverse)
 library(httr)
 library(rvest)
 
 
-# 다음 실시간 검색어가 포함된 웹 페이지의 URI를 복사하여 붙입니다. 
+# url 복사 
 'https://finance.naver.com/sise/sise_index.nhn?code=KOSPI'
 
-# HTTP 요청을 실행합니다. 
+# HTTP 요청 실행
 res <- GET(url = 'https://finance.naver.com/sise/sise_index.nhn?code=KOSPI')
 
-# 응답 결과를 확인합니다. 
+# 응답 결과 확인 
 print(x = res)
 
-# 실시간 검색어를 추출합니다. 
-searchWords <- res %>%
+# 페이지 상단 테이블 추출 (locale 임시 변경 for Win 사용자)
+Sys.setlocale(category = 'LC_ALL', locale = 'C')
+searchTable <- res %>%
   read_html(encoding = "euc-kr") %>% 
   html_nodes(css = '#contentarea_left > div.box_top_sub > div > div.subtop_sise_detail > table') %>%
   html_table(fill = TRUE)
 
-# 실시간 검색어를 출력합니다. 
-as.data.frame(searchWords)
+Sys.setlocale(category = 'LC_ALL', locale = 'korean')
 
 
+# 추출 여부 확인
+print(searchTable)
+data <- searchTable[[1]]
+glimpse(data)
+
+# 보기 좋게 전처리
+colnames <- rep(c('Category', 'Value'),2)
+newTable <- cbind(data[-4,1:2],data[-4,3:4])
+other <- data[4,] %>% str_split(pattern = '\n\t')
+content <- other[[4]] %>% str_trim() %>% str_sub(start = 1, end = 5)
+content
+value <- other[[4]] %>% str_trim() %>%str_sub(start = 6)
+for(i in 1:length(other[[4]])) {newTable[3+i,1] <- content[i]}
+for(i in 1:length(other[[4]])) {newTable[3+i,2] <- value[i]}
+colnames(newTable) <- colnames
+print(newTable)
 ## End of Document
 
 
