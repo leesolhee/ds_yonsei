@@ -22,7 +22,7 @@ searchWords <- res %>%
   html_nodes(css = 'div.realtime_part > ol > li > div > div:nth-child(1) > span.txt_issue > a') %>% 
   html_text(trim = TRUE)
 
-# 실시간 검색어 추
+# 실시간 검색어 추출
 print(x = searchWords)
 
 
